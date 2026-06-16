@@ -491,6 +491,58 @@
       border-color: var(--text);
     }
 
+    .outside-summary {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .outside-summary p {
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .outside-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .outside-card {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--surface);
+    }
+
+    .outside-card img {
+      width: 100%;
+      height: 270px;
+      object-fit: contain;
+      background: #f1f0ed;
+      display: block;
+    }
+
+    .outside-card-body {
+      padding: 11px 12px 13px;
+    }
+
+    .outside-card h3 {
+      font-size: 0.9rem;
+      font-weight: 500;
+      line-height: 1.35;
+      margin-bottom: 5px;
+    }
+
+    .outside-card p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
     .cafe-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(138px, 1fr));
@@ -568,6 +620,14 @@
 
       .cafe-detail img {
         min-height: 150px;
+      }
+
+      .outside-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .outside-card img {
+        height: 230px;
       }
 
       .splash {
@@ -693,7 +753,7 @@
     { name: '강별 성수',       lat: 37.5443, lng: 127.0557, time: '12:00', desc: '점심 코스', route: 1 },
     { name: '미닛뮤트 플래그십스토어', lat: 37.5356, lng: 126.9994, time: '이동', desc: '택시 이동', route: 2 },
     { name: '근처 카페',       lat: 37.5364, lng: 126.9997, time: '오후', desc: '한남동 일대 - 지도에서 선택', cafe: true },
-    { name: '해방촌',          lat: 37.5422, lng: 126.9874, time: '저녁', desc: '간맥 후 귀가' },
+    { name: '해방촌 신흥시장', lat: 37.5422, lng: 126.9874, time: '저녁', desc: '버스 이동 후 자리 있는 곳 선택', route: 3, outside: true },
   ];
 
   const cafes = [
@@ -813,6 +873,36 @@
             '한강진역에서 미닛뮤트까지 도보 이동',
           ],
           note: '2호선 + 6호선 조합. 성수역까지 걷는 시간 포함하면 택시보다 번거로운 선택지.',
+        },
+      ],
+    },
+    3: {
+      title: '한남동 → 해방촌 신흥시장',
+      from: stops[3],
+      to: stops[4],
+      options: [
+        {
+          label: '버스',
+          desc: '약 10분',
+          detailTitle: '버스로 해방촌 신흥시장까지 · 약 10분',
+          steps: [
+            '한남동 카페 후보지에서 가까운 정류장으로 이동',
+            '405번 또는 402번 버스 탑승 가능',
+            '해방촌/신흥시장 근처 정류장에서 하차',
+            '내려서 신흥시장 골목 안쪽으로 도보 이동',
+          ],
+          note: '정류장 위치와 배차에 따라 실제 소요시간은 조금 달라질 수 있음.',
+        },
+        {
+          label: '도보',
+          desc: '약 25~35분',
+          detailTitle: '걸어서 해방촌까지 · 약 25~35분',
+          steps: [
+            '한남동에서 이태원/해방촌 방향으로 이동',
+            '오르막 구간이 있어서 더운 날에는 피로도가 있음',
+            '도착 후 웨이팅 있는 곳은 바로 넘기고 다음 후보로 이동',
+          ],
+          note: '저녁 전에 체력 남으면 가능하지만, 데이트 코스상 버스가 더 편함.',
         },
       ],
     },
@@ -957,6 +1047,32 @@
     });
   };
 
+  const showOutsidePanel = () => {
+    showPanel(
+      'Dinner',
+      '해방촌 신흥시장 저녁 후보',
+      `<div class="outside-summary">
+        <p>토요일 저녁이라 야장 분위기 좋은 곳은 웨이팅이 있을 확률이 높다. 요즘은 1번 쪽 신흥시장 안쪽 후보들이 더 대세인 느낌이라 먼저 훑어보고, 자리가 없으면 2번 쪽 해방촌길 후보까지 내려가면서 자리 있는 곳으로 들어가는 플랜이 좋다.</p>
+      </div>
+      <div class="outside-grid">
+        <article class="outside-card">
+          <img src="./outside/1.png" alt="해방촌 신흥시장 안쪽 후보">
+          <div class="outside-card-body">
+            <h3>1. 신흥시장 안쪽 후보</h3>
+            <p>야장과 술집이 모여 있는 쪽. 요즘 분위기는 이쪽이 더 좋아 보여서 먼저 확인.</p>
+          </div>
+        </article>
+        <article class="outside-card">
+          <img src="./outside/2.png" alt="해방촌길 아래쪽 후보">
+          <div class="outside-card-body">
+            <h3>2. 해방촌길 아래쪽 후보</h3>
+            <p>1번 쪽 웨이팅이 길면 내려오면서 확인할 후보. 자리 있는 곳 우선으로 선택.</p>
+          </div>
+        </article>
+      </div>`
+    );
+  };
+
   const focusCafe = (cafe) => {
     showCafePanel(cafe.name);
     moveMap(cafe.lat, cafe.lng, 17);
@@ -991,6 +1107,7 @@
     setActiveStop(index);
     moveMap(stop.lat, stop.lng, stop.cafe ? 16 : 15);
     if (stop.cafe) showCafePanel();
+    if (stop.outside) showOutsidePanel();
   };
 
   renderTimeline();
