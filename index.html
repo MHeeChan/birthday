@@ -52,7 +52,7 @@
       padding: 28px;
       background:
         linear-gradient(rgba(247, 246, 244, 0.78), rgba(247, 246, 244, 0.92)),
-        url('./cafe/아스티에드빌라트카페.jpg') center / cover no-repeat;
+        url('./cafe/clean/아스티에드빌라트카페.jpg') center / cover no-repeat;
     }
 
     .splash[hidden] {
@@ -505,6 +505,10 @@
       line-height: 1.7;
     }
 
+    .outside-summary p + p {
+      margin-top: 10px;
+    }
+
     .outside-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -541,6 +545,53 @@
       font-size: 0.78rem;
       color: var(--muted);
       line-height: 1.55;
+    }
+
+    .dinner-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .dinner-card {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--surface);
+    }
+
+    .dinner-card img {
+      width: 100%;
+      height: 260px;
+      object-fit: contain;
+      background: #f1f0ed;
+      display: block;
+    }
+
+    .dinner-card-body {
+      padding: 11px 12px 13px;
+    }
+
+    .dinner-card h3 {
+      font-size: 0.9rem;
+      font-weight: 500;
+      line-height: 1.35;
+      margin-bottom: 5px;
+    }
+
+    .dinner-card p {
+      font-size: 0.82rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .dinner-card span {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.35;
     }
 
     .cafe-grid {
@@ -630,6 +681,14 @@
         height: 230px;
       }
 
+      .dinner-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .dinner-card img {
+        height: 210px;
+      }
+
       .splash {
         align-items: end;
         justify-items: start;
@@ -640,11 +699,11 @@
 </head>
 <body class="splash-open">
 
-<section class="splash" id="splash" aria-label="기메온 생일 데이트코스">
+<section class="splash" id="splash" aria-label="기메옹의 생일을 위한 6월20일 코스 둘러보기">
   <div class="splash-inner">
     <p class="splash-date">2026 · 06 · 20</p>
-    <h1 class="splash-title">기메온</h1>
-    <p class="splash-subtitle">생일 데이트코스</p>
+    <h1 class="splash-title">기메옹의 생일을 위한</h1>
+    <p class="splash-subtitle">6월20일 코스 둘러보기</p>
     <button class="splash-enter" id="splash-enter" type="button">들어가기</button>
   </div>
 </section>
@@ -762,7 +821,7 @@
       lat: 37.5373,
       lng: 126.9991,
       address: '서울 용산구 이태원로49길 37',
-      img: './cafe/낫배드커피.jpg',
+      img: './cafe/clean/낫배드커피.jpg',
       reason: '공간이 넓어서 쉬어가기 좋고, 망고 계열 메뉴가 많아서 여름 데이트 코스로 잘 맞아 보였다.',
     },
     {
@@ -770,7 +829,7 @@
       lat: 37.5364,
       lng: 127.0006,
       address: '서울 용산구 이태원로42길 38-4',
-      img: './cafe/네로우패스.jpg',
+      img: './cafe/clean/네로우패스.jpg',
       reason: '9,000원 수박주스가 궁금했고, 산딸기 정과 메뉴가 제천에서 못 샀던 라크크를 떠올리게 해서 후보에 넣었다.',
     },
     {
@@ -778,7 +837,7 @@
       lat: 37.5367,
       lng: 126.9995,
       address: '서울 용산구 이태원로55가길 22 1층',
-      img: './cafe/브리즈서울.jpg',
+      img: './cafe/clean/브리즈서울.jpg',
       reason: '',
     },
     {
@@ -786,7 +845,7 @@
       lat: 37.5369,
       lng: 127.0003,
       address: '서울 용산구 이태원로 247 1,2층',
-      img: './cafe/아벡쉐리.jpg',
+      img: './cafe/clean/아벡쉐리.jpg',
       reason: '만다린 블랙 메뉴가 메옹이가 좋아하는 오렌지 커피 느낌이라 취향에 맞을 것 같았다.',
     },
     {
@@ -794,7 +853,7 @@
       lat: 37.5370,
       lng: 126.9993,
       address: '서울 용산구 이태원로49길 13 아스티에드빌라트 서울 플레그쉽 스토어 4,5층',
-      img: './cafe/아스티에드빌라트카페.jpg',
+      img: './cafe/clean/아스티에드빌라트카페.jpg',
       reason: '1~4층에서 그릇과 오브제를 구경하고, 5층 꼭대기 뷰에서 커피까지 마실 수 있어서 코스 자체가 풍성하다.',
     },
     {
@@ -802,7 +861,7 @@
       lat: 37.5351,
       lng: 127.0006,
       address: '서울 용산구 대사관로5길 22 B2 카페 코제트',
-      img: './cafe/코제트한남.jpg',
+      img: './cafe/clean/코제트한남.jpg',
       reason: '깔끔한 인테리어가 좋고, 생복숭아빙수로 유명해서 디저트 후보로 넣기 좋다.',
     },
     {
@@ -810,8 +869,41 @@
       lat: 37.5373,
       lng: 126.9986,
       address: '서울 용산구 이태원로55나길 7 1층',
-      img: './cafe/한남작업실.jpg',
+      img: './cafe/clean/한남작업실.jpg',
       reason: '',
+    },
+  ];
+
+  const dinnerPlaces = [
+    {
+      name: '노가리공장',
+      type: '노상 맥주 · 마른안주',
+      img: './outside/clean/노가리공장.jpg',
+      reason: '노상에서 가볍게 맥주 마시는 마른안주 느낌.',
+    },
+    {
+      name: '퍼지하우스',
+      type: '포차 감성 · 한식 위주',
+      img: './outside/clean/퍼지하우스.jpg',
+      reason: '포차 감성으로 한식 안주 위주.',
+    },
+    {
+      name: '팁시타코',
+      type: '하이볼 · 멕시칸',
+      img: './outside/clean/팁시타코.jpg',
+      reason: '하이볼이 유명한 멕시칸 후보.',
+    },
+    {
+      name: '낀라오',
+      type: '동남아 음식',
+      img: './outside/clean/낀라오.jpg',
+      reason: '동남아 음식 쪽으로 가볍게 방향을 바꾸기 좋음.',
+    },
+    {
+      name: 'H5NG',
+      type: '중식/동남아식 느낌',
+      img: './outside/clean/H5NG.jpg',
+      reason: '중식과 동남아식 사이 느낌의 아시안 메뉴 후보.',
     },
   ];
 
@@ -1052,7 +1144,20 @@
       'Dinner',
       '해방촌 신흥시장 저녁 후보',
       `<div class="outside-summary">
-        <p>토요일 저녁이라 야장 분위기 좋은 곳은 웨이팅이 있을 확률이 높다. 요즘은 1번 쪽 신흥시장 안쪽 후보들이 더 대세인 느낌이라 먼저 훑어보고, 자리가 없으면 2번 쪽 해방촌길 후보까지 내려가면서 자리 있는 곳으로 들어가는 플랜이 좋다.</p>
+        <p>점심도 코스고 커피와 디저트까지 있다 보니, 저녁은 느끼하지 않은 메뉴 위주로 추렸다. 명확하게 노상이라고 적혀 있지 않아도 1층 가게들은 대부분 바깥 테이블 분위기가 있는 편이라, 토요일 저녁에는 웨이팅을 감안하고 움직이는 쪽이 좋다.</p>
+        <p>와인바는 일단 후보에서 뺐다. 더 고급진 저녁이 먹고 싶으면 와인바 쪽으로 한 번 더 찾아보면 된다. 지금 플랜은 1번 신흥시장 안쪽 후보를 먼저 보고, 자리가 없으면 2번 해방촌길 아래쪽 후보로 내려가면서 자리 있는 곳을 잡는 방식이다.</p>
+      </div>
+      <div class="dinner-grid">
+        ${dinnerPlaces.map(place => `
+          <article class="dinner-card">
+            <img src="${place.img}" alt="${place.name}">
+            <div class="dinner-card-body">
+              <h3>${place.name}</h3>
+              <span>${place.type}</span>
+              <p>${place.reason}</p>
+            </div>
+          </article>
+        `).join('')}
       </div>
       <div class="outside-grid">
         <article class="outside-card">
