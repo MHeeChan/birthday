@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>06.20 — 김혜원</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=DM+Mono:ital@0;1&display=swap" rel="stylesheet">
+  <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=090727bedf541d608103dd0ae02bcefe"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f7f6f4;
+      --surface: #ffffff;
+      --border: #e2e0db;
+      --text: #1a1916;
+      --muted: #8a8780;
+      --accent: #1a1916;
+      --tag-bg: #edece9;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* 레이아웃 */
+    .layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      min-height: 100vh;
+    }
+
+    /* 사이드바 */
+    .sidebar {
+      border-right: 1px solid var(--border);
+      padding: 48px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-header {}
+
+    .date-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .name {
+      font-size: 2rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .name-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* 타임라인 */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .stop {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 0 12px;
+      cursor: pointer;
+    }
+
+    .stop-line {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stop-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      margin-top: 18px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .stop.active .stop-dot,
+    .stop:hover .stop-dot {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .stop-connector {
+      width: 1px;
+      flex: 1;
+      background: var(--border);
+      margin: 4px 0;
+    }
+
+    .stop:last-child .stop-connector {
+      display: none;
+    }
+
+    .stop-body {
+      padding: 12px 0 20px;
+    }
+
+    .stop-time {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      margin-bottom: 3px;
+    }
+
+    .stop-name {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .stop-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 2px;
+      line-height: 1.5;
+    }
+
+    .stop.active .stop-name {
+      color: var(--accent);
+    }
+
+    /* 메인 — 지도 */
+    .main {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .map-header {
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .map-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .stop-count {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    #map {
+      flex: 1;
+      width: 100%;
+      min-height: calc(100vh - 60px);
+    }
+
+    /* 모바일 */
+    @media (max-width: 700px) {
+      .layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 32px 20px;
+        gap: 32px;
+      }
+
+      #map {
+        min-height: 60vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- 사이드바 -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <p class="date-label">2026 · 06 · 20</p>
+      <h1 class="name">김혜원</h1>
+      <p class="name-sub">생일 동선</p>
+    </div>
+
+    <div class="timeline">
+
+      <div class="stop" data-lat="37.3219" data-lng="127.1086">
+        <div class="stop-line">
+          <div class="stop-dot"></div>
+          <div class="stop-connector"></div>
+        </div>
+        <div class="stop-body">
+          <p class="stop-time">START</p>
+          <p class="stop-name">풍덕천동 71-170</p>
+          <p class="stop-desc">출발</p>
+        </div>
+      </div>
+
+      <div class="stop" data-lat="37.5443" data-lng="127.0557">
+        <div class="stop-line">
+          <div class="stop-dot"></div>
+          <div class="stop-connector"></div>
+        </div>
+        <div class="stop-body">
+          <p class="stop-time">12:00</p>
+          <p class="stop-name">강별 성수</p>
+          <p class="stop-desc">점심 코스</p>
+        </div>
+      </div>
+
+      <div class="stop" data-lat="37.5447" data-lng="127.0444">
+        <div class="stop-line">
+          <div class="stop-dot"></div>
+          <div class="stop-connector"></div>
+        </div>
+        <div class="stop-body">
+          <p class="stop-time">이동</p>
+          <p class="stop-name">미닛뮤트 플래그십스토어</p>
+          <p class="stop-desc">택시 이동</p>
+        </div>
+      </div>
+
+      <div class="stop" data-lat="37.5460" data-lng="127.0430">
+        <div class="stop-line">
+          <div class="stop-dot"></div>
+          <div class="stop-connector"></div>
+        </div>
+        <div class="stop-body">
+          <p class="stop-time">오후</p>
+          <p class="stop-name">근처 카페</p>
+          <p class="stop-desc">구경</p>
+        </div>
+      </div>
+
+      <div class="stop" data-lat="37.5467" data-lng="126.9878">
+        <div class="stop-line">
+          <div class="stop-dot"></div>
+          <div class="stop-connector"></div>
+        </div>
+        <div class="stop-body">
+          <p class="stop-time">저녁</p>
+          <p class="stop-name">해방촌</p>
+          <p class="stop-desc">간맥 후 귀가</p>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- 지도 -->
+  <main class="main">
+    <div class="map-header">
+      <span class="map-title">Route Map</span>
+      <span class="stop-count">5 stops</span>
+    </div>
+    <div id="map"></div>
+  </main>
+
+</div>
+
+<script>
+  const stops = [
+    { name: '풍덕천동 71-170', lat: 37.3219, lng: 127.1086, time: 'START' },
+    { name: '강별 성수',       lat: 37.5443, lng: 127.0557, time: '12:00' },
+    { name: '미닛뮤트',        lat: 37.5447, lng: 127.0444, time: '이동'  },
+    { name: '근처 카페',       lat: 37.5460, lng: 127.0430, time: '오후'  },
+    { name: '해방촌',          lat: 37.5467, lng: 126.9878, time: '저녁'  },
+  ];
+
+  const container = document.getElementById('map');
+  const map = new kakao.maps.Map(container, {
+    center: new kakao.maps.LatLng(37.48, 127.04),
+    level: 9,
+  });
+
+  // 숫자 마커
+  stops.forEach((stop, i) => {
+    const pos = new kakao.maps.LatLng(stop.lat, stop.lng);
+    const marker = new kakao.maps.CustomOverlay({
+      position: pos,
+      yAnchor: 0.5,
+      xAnchor: 0.5,
+      content: `<div style="
+        width:28px;height:28px;
+        background:#1a1916;color:#f7f6f4;
+        border-radius:50%;
+        display:flex;align-items:center;justify-content:center;
+        font-family:'DM Mono',monospace;font-size:11px;
+        box-shadow:0 2px 8px rgba(0,0,0,0.18);
+        cursor:pointer;
+      " title="${stop.name}">${i + 1}</div>`,
+    });
+    marker.setMap(map);
+  });
+
+  // 경로 선
+  new kakao.maps.Polyline({
+    map,
+    path: stops.map(s => new kakao.maps.LatLng(s.lat, s.lng)),
+    strokeColor: '#1a1916',
+    strokeWeight: 2,
+    strokeOpacity: 0.35,
+    strokeStyle: 'solid',
+  });
+
+  // 사이드바 클릭 → 지도 이동
+  document.querySelectorAll('.stop').forEach((el, i) => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.stop').forEach(s => s.classList.remove('active'));
+      el.classList.add('active');
+      map.setLevel(4, { anchor: new kakao.maps.LatLng(stops[i].lat, stops[i].lng) });
+      map.panTo(new kakao.maps.LatLng(stops[i].lat, stops[i].lng));
+    });
+  });
+</script>
+</body>
+</html>
