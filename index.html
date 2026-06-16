@@ -559,6 +559,17 @@
       border-radius: 6px;
       overflow: hidden;
       background: var(--surface);
+      cursor: pointer;
+      padding: 0;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+      width: 100%;
+    }
+
+    .dinner-card.active,
+    .dinner-card:hover {
+      border-color: var(--text);
     }
 
     .dinner-card img {
@@ -592,6 +603,21 @@
       font-size: 0.72rem;
       color: var(--muted);
       line-height: 1.35;
+    }
+
+    .dinner-more {
+      display: inline-flex;
+      margin-top: 10px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 5px 9px;
+      color: var(--text);
+      font-size: 0.75rem;
+      text-decoration: none;
+    }
+
+    .dinner-more:hover {
+      border-color: var(--text);
     }
 
     .cafe-grid {
@@ -770,15 +796,15 @@
         </div>
       </div>
 
-      <div class="stop" data-lat="37.5422" data-lng="126.9874">
+      <div class="stop" data-lat="37.5447" data-lng="126.9835">
         <div class="stop-line">
           <div class="stop-dot"></div>
           <div class="stop-connector"></div>
         </div>
         <div class="stop-body">
           <p class="stop-time">저녁</p>
-          <p class="stop-name">해방촌</p>
-          <p class="stop-desc">간맥 후 귀가</p>
+          <p class="stop-name">해방촌 신흥시장</p>
+          <p class="stop-desc">버스 이동 후 자리 있는 곳 선택</p>
         </div>
       </div>
 
@@ -812,7 +838,7 @@
     { name: '강별 성수',       lat: 37.5443, lng: 127.0557, time: '12:00', desc: '점심 코스', route: 1 },
     { name: '미닛뮤트 플래그십스토어', lat: 37.5356, lng: 126.9994, time: '이동', desc: '택시 이동', route: 2 },
     { name: '근처 카페',       lat: 37.5364, lng: 126.9997, time: '오후', desc: '한남동 일대 - 지도에서 선택', cafe: true },
-    { name: '해방촌 신흥시장', lat: 37.5422, lng: 126.9874, time: '저녁', desc: '버스 이동 후 자리 있는 곳 선택', route: 3, outside: true },
+    { name: '해방촌 신흥시장', lat: 37.5447, lng: 126.9835, time: '저녁', desc: '버스 이동 후 자리 있는 곳 선택', route: 3, outside: true },
   ];
 
   const cafes = [
@@ -877,30 +903,45 @@
   const dinnerPlaces = [
     {
       name: '노가리공장',
+      lat: 37.5448,
+      lng: 126.9833,
+      address: '해방촌 신흥시장 안쪽',
       type: '노상 맥주 · 마른안주',
       img: './outside/clean/노가리공장.jpg',
       reason: '노상에서 가볍게 맥주 마시는 마른안주 느낌.',
     },
     {
       name: '퍼지하우스',
+      lat: 37.5445,
+      lng: 126.9836,
+      address: '해방촌 신흥시장 안쪽',
       type: '포차 감성 · 한식 위주',
       img: './outside/clean/퍼지하우스.jpg',
       reason: '포차 감성으로 한식 안주 위주.',
     },
     {
       name: '팁시타코',
+      lat: 37.5446,
+      lng: 126.9835,
+      address: '서울 용산구 신흥로 99-1 신흥시장 내부 1층',
       type: '하이볼 · 멕시칸',
       img: './outside/clean/팁시타코.jpg',
       reason: '하이볼이 유명한 멕시칸 후보.',
     },
     {
       name: '낀라오',
+      lat: 37.5446,
+      lng: 126.9835,
+      address: '서울 용산구 신흥로 99-1',
       type: '동남아 음식',
       img: './outside/clean/낀라오.jpg',
       reason: '동남아 음식 쪽으로 가볍게 방향을 바꾸기 좋음.',
     },
     {
       name: 'H5NG',
+      lat: 37.5443,
+      lng: 126.9840,
+      address: '해방촌 신흥시장 근처',
       type: '중식/동남아식 느낌',
       img: './outside/clean/H5NG.jpg',
       reason: '중식과 동남아식 사이 느낌의 아시안 메뉴 후보.',
@@ -1139,7 +1180,9 @@
     });
   };
 
-  const showOutsidePanel = () => {
+  const showOutsidePanel = (selectedName = '') => {
+    const dinnerReviewUrl = (place) =>
+      `https://search.naver.com/search.naver?query=${encodeURIComponent(`${place.name} 해방촌 리뷰`)}`;
     showPanel(
       'Dinner',
       '해방촌 신흥시장 저녁 후보',
@@ -1149,12 +1192,14 @@
       </div>
       <div class="dinner-grid">
         ${dinnerPlaces.map(place => `
-          <article class="dinner-card">
+          <article class="dinner-card${place.name === selectedName ? ' active' : ''}" data-dinner="${place.name}" tabindex="0">
             <img src="${place.img}" alt="${place.name}">
             <div class="dinner-card-body">
               <h3>${place.name}</h3>
               <span>${place.type}</span>
+              <span>${place.address}</span>
               <p>${place.reason}</p>
+              <a class="dinner-more" href="${dinnerReviewUrl(place)}" target="_blank" rel="noopener">더보기</a>
             </div>
           </article>
         `).join('')}
@@ -1176,11 +1221,35 @@
         </article>
       </div>`
     );
+    panelContent.querySelectorAll('.dinner-card').forEach((card) => {
+      card.addEventListener('click', () => {
+        const place = dinnerPlaces.find(item => item.name === card.dataset.dinner);
+        if (!place) return;
+        focusDinnerPlace(place);
+      });
+      card.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        const place = dinnerPlaces.find(item => item.name === card.dataset.dinner);
+        if (!place) return;
+        focusDinnerPlace(place);
+      });
+    });
+    panelContent.querySelectorAll('.dinner-more').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        event.stopPropagation();
+      });
+    });
   };
 
   const focusCafe = (cafe) => {
     showCafePanel(cafe.name);
     moveMap(cafe.lat, cafe.lng, 17);
+  };
+
+  const focusDinnerPlace = (place) => {
+    showOutsidePanel(place.name);
+    moveMap(place.lat, place.lng, 18);
   };
 
   const renderTimeline = () => {
@@ -1195,7 +1264,7 @@
           <p class="stop-time">${stop.time}</p>
           <p class="stop-name">${stop.name}</p>
           <p class="stop-desc">${stop.desc}</p>
-          ${stop.route ? `<button class="route-btn" type="button" data-route="${stop.route}">${stop.route === 1 ? '대중교통' : '택시'} 길찾기</button>` : ''}
+          ${stop.route ? `<button class="route-btn" type="button" data-route="${stop.route}">${routes[stop.route].options[0].label} 길찾기</button>` : ''}
         </div>
       </div>
     `).join('');
@@ -1268,6 +1337,31 @@
 
     naver.maps.Event.addListener(marker, 'click', () => {
       focusCafe(cafe);
+    });
+  });
+
+  dinnerPlaces.forEach((place, index) => {
+    const marker = new naver.maps.Marker({
+      position: new naver.maps.LatLng(place.lat, place.lng),
+      map,
+      title: place.name,
+      icon: {
+        content: `<div style="
+          width: 26px; height: 26px;
+          background: #fff;
+          border: 2px solid #1a1916;
+          border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          font-family:'DM Mono',monospace;font-size: 10px;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+          cursor: pointer;
+        ">${index + 1}</div>`,
+        anchor: new naver.maps.Point(13, 13),
+      }
+    });
+
+    naver.maps.Event.addListener(marker, 'click', () => {
+      focusDinnerPlace(place);
     });
   });
 
