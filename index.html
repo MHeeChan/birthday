@@ -156,6 +156,23 @@
       color: var(--accent);
     }
 
+    .route-btn {
+      display: inline-block;
+      margin-top: 7px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 3px 8px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .route-btn:hover {
+      color: var(--text);
+      border-color: var(--text);
+    }
+
     /* 메인 — 지도 */
     .main {
       display: flex;
@@ -247,10 +264,11 @@
           <p class="stop-time">12:00</p>
           <p class="stop-name">강별 성수</p>
           <p class="stop-desc">점심 코스</p>
+          <a class="route-btn" href="https://map.naver.com/index.nhn?slng=127.1086&slat=37.3219&stext=풍덕천동&elng=127.0557&elat=37.5443&etext=강별성수&menu=route&pathType=2" target="_blank">🚇 대중교통 길찾기</a>
         </div>
       </div>
 
-      <div class="stop" data-lat="37.5447" data-lng="127.0444">
+      <div class="stop" data-lat="37.5350" data-lng="127.0020">
         <div class="stop-line">
           <div class="stop-dot"></div>
           <div class="stop-connector"></div>
@@ -259,10 +277,11 @@
           <p class="stop-time">이동</p>
           <p class="stop-name">미닛뮤트 플래그십스토어</p>
           <p class="stop-desc">택시 이동</p>
+          <a class="route-btn" href="https://map.naver.com/index.nhn?slng=127.0557&slat=37.5443&stext=강별성수&elng=127.0020&elat=37.5350&etext=미닛뮤트&menu=route&pathType=0" target="_blank">🚕 택시 길찾기</a>
         </div>
       </div>
 
-      <div class="stop" data-lat="37.5460" data-lng="127.0430">
+      <div class="stop" data-lat="37.5350" data-lng="127.0025">
         <div class="stop-line">
           <div class="stop-dot"></div>
           <div class="stop-connector"></div>
@@ -270,7 +289,7 @@
         <div class="stop-body">
           <p class="stop-time">오후</p>
           <p class="stop-name">근처 카페</p>
-          <p class="stop-desc">구경</p>
+          <p class="stop-desc">한남동 일대 — 지도에서 선택</p>
         </div>
       </div>
 
@@ -348,9 +367,65 @@
     strokeOpacity: 0.35,
   });
 
+  // 카페 마커
+  const cafes = [
+    { name: '낫배드커피',       lat: 37.5343, lng: 127.0025, img: './cafe/낫배드커피.jpg' },
+    { name: '네로우패스',       lat: 37.5355, lng: 127.0012, img: './cafe/네로우패스.jpg' },
+    { name: '브리즈서울',       lat: 37.5345, lng: 127.0038, img: './cafe/브리즈서울.jpg' },
+    { name: '아벡쉐리',         lat: 37.5338, lng: 126.9997, img: './cafe/아벡쉐리.jpg' },
+    { name: '아스티에드빌라트', lat: 37.5350, lng: 127.0018, img: './cafe/아스티에드빌라트카페.jpg' },
+    { name: '코제트 한남',      lat: 37.5348, lng: 127.0032, img: './cafe/코제트한남.jpg' },
+    { name: '한남작업실',       lat: 37.5343, lng: 127.0042, img: './cafe/한남작업실.jpg' },
+  ];
+
+  let activeInfo = null;
+  cafes.forEach(cafe => {
+    const marker = new naver.maps.Marker({
+      position: new naver.maps.LatLng(cafe.lat, cafe.lng),
+      map,
+      icon: {
+        content: `<div style="
+          width: 24px; height: 24px;
+          background: #fff;
+          border: 2px solid #8a8780;
+          border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 11px;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+          cursor: pointer;
+        ">☕</div>`,
+        anchor: new naver.maps.Point(12, 12),
+      }
+    });
+
+    const infoWindow = new naver.maps.InfoWindow({
+      content: `<div style="
+        width: 180px; padding: 0; border-radius: 4px; overflow: hidden;
+        font-family: 'Noto Sans KR', sans-serif;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      ">
+        <img src="${cafe.img}" style="width:100%;height:110px;object-fit:cover;display:block;">
+        <div style="padding:10px 12px;background:#fff;">
+          <p style="margin:0;font-size:12px;font-weight:500;color:#1a1916;">${cafe.name}</p>
+        </div>
+      </div>`,
+      borderWidth: 0,
+      backgroundColor: 'transparent',
+      disableAnchor: true,
+    });
+
+    naver.maps.Event.addListener(marker, 'click', () => {
+      if (activeInfo) activeInfo.close();
+      if (activeInfo === infoWindow) { activeInfo = null; return; }
+      infoWindow.open(map, marker);
+      activeInfo = infoWindow;
+    });
+  });
+
   // 사이드바 클릭 → 지도 이동
   document.querySelectorAll('.stop').forEach((el, i) => {
-    el.addEventListener('click', () => {
+    el.addEventListener('click', (e) => {
+      if (e.target.classList.contains('route-btn')) return;
       document.querySelectorAll('.stop').forEach(s => s.classList.remove('active'));
       el.classList.add('active');
       map.panTo(new naver.maps.LatLng(stops[i].lat, stops[i].lng));
