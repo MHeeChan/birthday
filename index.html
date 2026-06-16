@@ -5,12 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>06.20 — 김혜원</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=DM+Mono:ital@0;1&display=swap" rel="stylesheet">
+  <script>
+    if (location.protocol === 'file:') {
+      location.replace('https://mheechan.github.io/birthday/');
+    }
+  </script>
   <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=43cf34s2e6"></script>
   <script>
     window.navermap_authFailure = function () {
       document.getElementById('map').innerHTML =
         '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#8a8780;font-family:sans-serif;font-size:14px;text-align:center;padding:20px;">' +
-        '지도 인증 실패<br><span style="font-size:12px;">NCP 콘솔에 이 사이트 주소를 등록해야 떠요</span></div>';
+        '지도 인증 실패<br><span style="font-size:12px;">file:// 말고 로컬 서버 주소로 열어야 합니다</span></div>';
     };
   </script>
   <style>
@@ -157,15 +162,18 @@
     }
 
     .route-btn {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       margin-top: 7px;
       font-family: 'DM Mono', monospace;
       font-size: 10px;
       color: var(--muted);
-      text-decoration: none;
+      background: transparent;
       border: 1px solid var(--border);
       border-radius: 4px;
       padding: 3px 8px;
+      cursor: pointer;
       transition: color 0.2s, border-color 0.2s;
     }
     .route-btn:hover {
@@ -177,6 +185,8 @@
     .main {
       display: flex;
       flex-direction: column;
+      position: relative;
+      min-width: 0;
     }
 
     .map-header {
@@ -207,6 +217,129 @@
       min-height: calc(100vh - 60px);
     }
 
+    [hidden] {
+      display: none !important;
+    }
+
+    .bottom-panel {
+      position: absolute;
+      left: 28px;
+      right: 28px;
+      bottom: 24px;
+      max-height: min(430px, calc(100vh - 120px));
+      overflow: auto;
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.14);
+      padding: 18px;
+      z-index: 20;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .panel-kicker {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .panel-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    .panel-close {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      flex: 0 0 auto;
+    }
+
+    .route-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+    }
+
+    .route-option {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      background: var(--surface);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .route-option.active,
+    .route-option:hover {
+      border-color: var(--text);
+    }
+
+    .route-option strong {
+      display: block;
+      font-size: 0.86rem;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .route-option span {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .cafe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(138px, 1fr));
+      gap: 12px;
+    }
+
+    .cafe-card {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--surface);
+      cursor: pointer;
+    }
+
+    .cafe-card.active,
+    .cafe-card:hover {
+      border-color: var(--text);
+    }
+
+    .cafe-card img {
+      width: 100%;
+      height: 210px;
+      object-fit: contain;
+      background: #f1f0ed;
+      display: block;
+    }
+
+    .cafe-card p {
+      padding: 9px 10px 10px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
     /* 모바일 */
     @media (max-width: 700px) {
       .layout {
@@ -226,6 +359,23 @@
       #map {
         min-height: 60vh;
       }
+
+      .bottom-panel {
+        position: fixed;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        max-height: 58vh;
+        padding: 14px;
+      }
+
+      .cafe-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .cafe-card img {
+        height: 180px;
+      }
     }
   </style>
 </head>
@@ -241,7 +391,7 @@
       <p class="name-sub">생일 동선</p>
     </div>
 
-    <div class="timeline">
+    <div class="timeline" id="timeline">
 
       <div class="stop" data-lat="37.3219" data-lng="127.1086">
         <div class="stop-line">
@@ -264,7 +414,7 @@
           <p class="stop-time">12:00</p>
           <p class="stop-name">강별 성수</p>
           <p class="stop-desc">점심 코스</p>
-          <a class="route-btn" href="https://map.naver.com/index.nhn?slng=127.1086&slat=37.3219&stext=풍덕천동&elng=127.0557&elat=37.5443&etext=강별성수&menu=route&pathType=2" target="_blank">🚇 대중교통 길찾기</a>
+          <button class="route-btn" type="button" data-route="1">대중교통 길찾기</button>
         </div>
       </div>
 
@@ -277,7 +427,7 @@
           <p class="stop-time">이동</p>
           <p class="stop-name">미닛뮤트 플래그십스토어</p>
           <p class="stop-desc">택시 이동</p>
-          <a class="route-btn" href="https://map.naver.com/index.nhn?slng=127.0557&slat=37.5443&stext=강별성수&elng=127.0020&elat=37.5350&etext=미닛뮤트&menu=route&pathType=0" target="_blank">🚕 택시 길찾기</a>
+          <button class="route-btn" type="button" data-route="2">택시 길찾기</button>
         </div>
       </div>
 
@@ -293,7 +443,7 @@
         </div>
       </div>
 
-      <div class="stop" data-lat="37.5467" data-lng="126.9878">
+      <div class="stop" data-lat="37.5422" data-lng="126.9874">
         <div class="stop-line">
           <div class="stop-dot"></div>
           <div class="stop-connector"></div>
@@ -315,18 +465,59 @@
       <span class="stop-count">5 stops</span>
     </div>
     <div id="map"></div>
+    <section class="bottom-panel" id="detail-panel" hidden>
+      <div class="panel-head">
+        <div>
+          <p class="panel-kicker" id="panel-kicker"></p>
+          <h2 class="panel-title" id="panel-title"></h2>
+        </div>
+        <button class="panel-close" type="button" id="panel-close" aria-label="닫기">×</button>
+      </div>
+      <div id="panel-content"></div>
+    </section>
   </main>
 
 </div>
 
 <script>
   const stops = [
-    { name: '풍덕천동 71-170', lat: 37.3219, lng: 127.1086, time: 'START' },
-    { name: '강별 성수',       lat: 37.5443, lng: 127.0557, time: '12:00' },
-    { name: '미닛뮤트',        lat: 37.5447, lng: 127.0444, time: '이동'  },
-    { name: '근처 카페',       lat: 37.5460, lng: 127.0430, time: '오후'  },
-    { name: '해방촌',          lat: 37.5467, lng: 126.9878, time: '저녁'  },
+    { name: '풍덕천동 71-170', lat: 37.3219, lng: 127.1086, time: 'START', desc: '출발' },
+    { name: '강별 성수',       lat: 37.5443, lng: 127.0557, time: '12:00', desc: '점심 코스', route: 1 },
+    { name: '미닛뮤트 플래그십스토어', lat: 37.5350, lng: 127.0020, time: '이동', desc: '택시 이동', route: 2 },
+    { name: '근처 카페',       lat: 37.5350, lng: 127.0025, time: '오후', desc: '한남동 일대 - 지도에서 선택', cafe: true },
+    { name: '해방촌',          lat: 37.5422, lng: 126.9874, time: '저녁', desc: '간맥 후 귀가' },
   ];
+
+  const cafes = [
+    { name: '낫배드커피',       lat: 37.5343, lng: 127.0025, img: './cafe/낫배드커피.jpg' },
+    { name: '네로우패스',       lat: 37.5355, lng: 127.0012, img: './cafe/네로우패스.jpg' },
+    { name: '브리즈서울',       lat: 37.5345, lng: 127.0038, img: './cafe/브리즈서울.jpg' },
+    { name: '아벡쉐리',         lat: 37.5338, lng: 126.9997, img: './cafe/아벡쉐리.jpg' },
+    { name: '아스티에드빌라트', lat: 37.5350, lng: 127.0018, img: './cafe/아스티에드빌라트카페.jpg' },
+    { name: '코제트 한남',      lat: 37.5348, lng: 127.0032, img: './cafe/코제트한남.jpg' },
+    { name: '한남작업실',       lat: 37.5343, lng: 127.0042, img: './cafe/한남작업실.jpg' },
+  ];
+
+  const routes = {
+    1: {
+      title: '풍덕천동 71-170 → 강별 성수',
+      from: stops[0],
+      to: stops[1],
+      options: [
+        { label: '대중교통', desc: '지하철/버스 기준으로 이동 선택' },
+        { label: '택시', desc: '차량 이동 기준으로 지도 구간 표시' },
+      ],
+    },
+    2: {
+      title: '강별 성수 → 미닛뮤트',
+      from: stops[1],
+      to: stops[2],
+      options: [
+        { label: '택시', desc: '성수에서 한남으로 바로 이동' },
+        { label: '대중교통', desc: '지하철/버스 조합으로 이동 선택' },
+      ],
+    },
+  };
 
   const map = new naver.maps.Map('map', {
     center: new naver.maps.LatLng(37.48, 127.04),
@@ -338,9 +529,128 @@
     zoomControlOptions: { position: naver.maps.Position.TOP_RIGHT },
   });
 
+  let activeSegmentLine = null;
+
+  const panel = document.getElementById('detail-panel');
+  const panelKicker = document.getElementById('panel-kicker');
+  const panelTitle = document.getElementById('panel-title');
+  const panelContent = document.getElementById('panel-content');
+  document.getElementById('panel-close').addEventListener('click', () => {
+    panel.hidden = true;
+  });
+
+  const showPanel = (kicker, title, content) => {
+    panelKicker.textContent = kicker;
+    panelTitle.textContent = title;
+    panelContent.innerHTML = content;
+    panel.hidden = false;
+  };
+
+  const highlightSegment = (from, to) => {
+    if (activeSegmentLine) activeSegmentLine.setMap(null);
+    activeSegmentLine = new naver.maps.Polyline({
+      map,
+      path: [
+        new naver.maps.LatLng(from.lat, from.lng),
+        new naver.maps.LatLng(to.lat, to.lng),
+      ],
+      strokeColor: '#1a1916',
+      strokeWeight: 5,
+      strokeOpacity: 0.78,
+    });
+    const bounds = new naver.maps.LatLngBounds();
+    bounds.extend(new naver.maps.LatLng(from.lat, from.lng));
+    bounds.extend(new naver.maps.LatLng(to.lat, to.lng));
+    map.fitBounds(bounds, { top: 90, right: 90, bottom: 180, left: 90 });
+  };
+
+  const showRoutePanel = (routeIndex) => {
+    const route = routes[routeIndex];
+    if (!route) return;
+    highlightSegment(route.from, route.to);
+    showPanel(
+      'Route',
+      route.title,
+      `<div class="route-options">
+        ${route.options.map((option, index) => `
+          <button class="route-option${index === 0 ? ' active' : ''}" type="button" data-route-option="${index}">
+            <strong>${option.label}</strong>
+            <span>${option.desc}</span>
+          </button>
+        `).join('')}
+      </div>`
+    );
+    panelContent.querySelectorAll('.route-option').forEach((button) => {
+      button.addEventListener('click', () => {
+        panelContent.querySelectorAll('.route-option').forEach(el => el.classList.remove('active'));
+        button.classList.add('active');
+        highlightSegment(route.from, route.to);
+      });
+    });
+  };
+
+  const showCafePanel = (selectedName = '') => {
+    showPanel(
+      'Cafe',
+      '한남동 카페 선택',
+      `<div class="cafe-grid">
+        ${cafes.map(cafe => `
+          <button class="cafe-card${cafe.name === selectedName ? ' active' : ''}" type="button" data-cafe="${cafe.name}">
+            <img src="${cafe.img}" alt="${cafe.name}">
+            <p>${cafe.name}</p>
+          </button>
+        `).join('')}
+      </div>`
+    );
+    panelContent.querySelectorAll('.cafe-card').forEach((card) => {
+      card.addEventListener('click', () => {
+        const cafe = cafes.find(item => item.name === card.dataset.cafe);
+        if (!cafe) return;
+        panelContent.querySelectorAll('.cafe-card').forEach(el => el.classList.remove('active'));
+        card.classList.add('active');
+        map.panTo(new naver.maps.LatLng(cafe.lat, cafe.lng));
+        map.setZoom(17, true);
+      });
+    });
+  };
+
+  const renderTimeline = () => {
+    const timeline = document.getElementById('timeline');
+    timeline.innerHTML = stops.map((stop, index) => `
+      <div class="stop" data-stop="${index}">
+        <div class="stop-line">
+          <div class="stop-dot"></div>
+          <div class="stop-connector"></div>
+        </div>
+        <div class="stop-body">
+          <p class="stop-time">${stop.time}</p>
+          <p class="stop-name">${stop.name}</p>
+          <p class="stop-desc">${stop.desc}</p>
+          ${stop.route ? `<button class="route-btn" type="button" data-route="${stop.route}">${stop.route === 1 ? '대중교통' : '택시'} 길찾기</button>` : ''}
+        </div>
+      </div>
+    `).join('');
+  };
+
+  const setActiveStop = (index) => {
+    document.querySelectorAll('.stop').forEach(s => s.classList.remove('active'));
+    document.querySelector(`.stop[data-stop="${index}"]`)?.classList.add('active');
+  };
+
+  const focusStop = (index) => {
+    const stop = stops[index];
+    if (!stop) return;
+    setActiveStop(index);
+    map.panTo(new naver.maps.LatLng(stop.lat, stop.lng));
+    map.setZoom(stop.cafe ? 16 : 15, true);
+    if (stop.cafe) showCafePanel();
+  };
+
+  renderTimeline();
+
   // 숫자 마커
   stops.forEach((stop, i) => {
-    new naver.maps.Marker({
+    const marker = new naver.maps.Marker({
       position: new naver.maps.LatLng(stop.lat, stop.lng),
       map,
       title: stop.name,
@@ -356,6 +666,7 @@
         anchor: new naver.maps.Point(14, 14),
       },
     });
+    naver.maps.Event.addListener(marker, 'click', () => focusStop(i));
   });
 
   // 경로 선
@@ -366,17 +677,6 @@
     strokeWeight: 2,
     strokeOpacity: 0.35,
   });
-
-  // 카페 마커
-  const cafes = [
-    { name: '낫배드커피',       lat: 37.5343, lng: 127.0025, img: './cafe/낫배드커피.jpg' },
-    { name: '네로우패스',       lat: 37.5355, lng: 127.0012, img: './cafe/네로우패스.jpg' },
-    { name: '브리즈서울',       lat: 37.5345, lng: 127.0038, img: './cafe/브리즈서울.jpg' },
-    { name: '아벡쉐리',         lat: 37.5338, lng: 126.9997, img: './cafe/아벡쉐리.jpg' },
-    { name: '아스티에드빌라트', lat: 37.5350, lng: 127.0018, img: './cafe/아스티에드빌라트카페.jpg' },
-    { name: '코제트 한남',      lat: 37.5348, lng: 127.0032, img: './cafe/코제트한남.jpg' },
-    { name: '한남작업실',       lat: 37.5343, lng: 127.0042, img: './cafe/한남작업실.jpg' },
-  ];
 
   let activeInfo = null;
   cafes.forEach(cafe => {
@@ -400,11 +700,11 @@
 
     const infoWindow = new naver.maps.InfoWindow({
       content: `<div style="
-        width: 180px; padding: 0; border-radius: 4px; overflow: hidden;
+        width: 160px; padding: 0; border-radius: 4px; overflow: hidden;
         font-family: 'Noto Sans KR', sans-serif;
         box-shadow: 0 4px 16px rgba(0,0,0,0.12);
       ">
-        <img src="${cafe.img}" style="width:100%;height:110px;object-fit:cover;display:block;">
+        <img src="${cafe.img}" style="width:100%;height:230px;object-fit:contain;background:#f1f0ed;display:block;">
         <div style="padding:10px 12px;background:#fff;">
           <p style="margin:0;font-size:12px;font-weight:500;color:#1a1916;">${cafe.name}</p>
         </div>
@@ -419,17 +719,24 @@
       if (activeInfo === infoWindow) { activeInfo = null; return; }
       infoWindow.open(map, marker);
       activeInfo = infoWindow;
+      showCafePanel(cafe.name);
     });
   });
 
+  const mapBounds = new naver.maps.LatLngBounds();
+  [...stops, ...cafes].forEach(item => {
+    mapBounds.extend(new naver.maps.LatLng(item.lat, item.lng));
+  });
+  map.fitBounds(mapBounds, { top: 70, right: 70, bottom: 70, left: 70 });
+
   // 사이드바 클릭 → 지도 이동
-  document.querySelectorAll('.stop').forEach((el, i) => {
+  document.querySelectorAll('.stop').forEach((el) => {
     el.addEventListener('click', (e) => {
-      if (e.target.classList.contains('route-btn')) return;
-      document.querySelectorAll('.stop').forEach(s => s.classList.remove('active'));
-      el.classList.add('active');
-      map.panTo(new naver.maps.LatLng(stops[i].lat, stops[i].lng));
-      map.setZoom(15, true);
+      if (e.target.classList.contains('route-btn')) {
+        showRoutePanel(Number(e.target.dataset.route));
+        return;
+      }
+      focusStop(Number(el.dataset.stop));
     });
   });
 </script>
