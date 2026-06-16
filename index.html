@@ -5,7 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>06.20 — 김혜원</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=DM+Mono:ital@0;1&display=swap" rel="stylesheet">
-  <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=090727bedf541d608103dd0ae02bcefe"></script>
+  <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=43cf34s2e6"></script>
+  <script>
+    window.navermap_authFailure = function () {
+      document.getElementById('map').innerHTML =
+        '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#8a8780;font-family:sans-serif;font-size:14px;text-align:center;padding:20px;">' +
+        '지도 인증 실패<br><span style="font-size:12px;">NCP 콘솔에 이 사이트 주소를 등록해야 떠요</span></div>';
+    };
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -302,40 +309,43 @@
     { name: '해방촌',          lat: 37.5467, lng: 126.9878, time: '저녁'  },
   ];
 
-  const container = document.getElementById('map');
-  const map = new kakao.maps.Map(container, {
-    center: new kakao.maps.LatLng(37.48, 127.04),
-    level: 9,
+  const map = new naver.maps.Map('map', {
+    center: new naver.maps.LatLng(37.48, 127.04),
+    zoom: 11,
+    mapTypeControl: false,
+    scaleControl: false,
+    logoControl: true,
+    zoomControl: true,
+    zoomControlOptions: { position: naver.maps.Position.TOP_RIGHT },
   });
 
   // 숫자 마커
   stops.forEach((stop, i) => {
-    const pos = new kakao.maps.LatLng(stop.lat, stop.lng);
-    const marker = new kakao.maps.CustomOverlay({
-      position: pos,
-      yAnchor: 0.5,
-      xAnchor: 0.5,
-      content: `<div style="
-        width:28px;height:28px;
-        background:#1a1916;color:#f7f6f4;
-        border-radius:50%;
-        display:flex;align-items:center;justify-content:center;
-        font-family:'DM Mono',monospace;font-size:11px;
-        box-shadow:0 2px 8px rgba(0,0,0,0.18);
-        cursor:pointer;
-      " title="${stop.name}">${i + 1}</div>`,
+    new naver.maps.Marker({
+      position: new naver.maps.LatLng(stop.lat, stop.lng),
+      map,
+      title: stop.name,
+      icon: {
+        content: `<div style="
+          width:28px;height:28px;
+          background:#1a1916;color:#f7f6f4;
+          border-radius:50%;
+          display:flex;align-items:center;justify-content:center;
+          font-family:'DM Mono',monospace;font-size:11px;
+          box-shadow:0 2px 8px rgba(0,0,0,0.18);
+        " title="${stop.name}">${i + 1}</div>`,
+        anchor: new naver.maps.Point(14, 14),
+      },
     });
-    marker.setMap(map);
   });
 
   // 경로 선
-  new kakao.maps.Polyline({
+  new naver.maps.Polyline({
     map,
-    path: stops.map(s => new kakao.maps.LatLng(s.lat, s.lng)),
+    path: stops.map(s => new naver.maps.LatLng(s.lat, s.lng)),
     strokeColor: '#1a1916',
     strokeWeight: 2,
     strokeOpacity: 0.35,
-    strokeStyle: 'solid',
   });
 
   // 사이드바 클릭 → 지도 이동
@@ -343,8 +353,8 @@
     el.addEventListener('click', () => {
       document.querySelectorAll('.stop').forEach(s => s.classList.remove('active'));
       el.classList.add('active');
-      map.setLevel(4, { anchor: new kakao.maps.LatLng(stops[i].lat, stops[i].lng) });
-      map.panTo(new kakao.maps.LatLng(stops[i].lat, stops[i].lng));
+      map.panTo(new naver.maps.LatLng(stops[i].lat, stops[i].lng));
+      map.setZoom(15, true);
     });
   });
 </script>
