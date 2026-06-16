@@ -942,11 +942,15 @@
       card.addEventListener('click', () => {
         const cafe = cafes.find(item => item.name === card.dataset.cafe);
         if (!cafe) return;
-        showCafePanel(cafe.name);
-        map.panTo(new naver.maps.LatLng(cafe.lat, cafe.lng));
-        map.setZoom(17, true);
+        focusCafe(cafe);
       });
     });
+  };
+
+  const focusCafe = (cafe) => {
+    showCafePanel(cafe.name);
+    map.panTo(new naver.maps.LatLng(cafe.lat, cafe.lng));
+    map.setZoom(17, true);
   };
 
   const renderTimeline = () => {
@@ -1013,7 +1017,6 @@
     strokeOpacity: 0.35,
   });
 
-  let activeInfo = null;
   cafes.forEach(cafe => {
     const marker = new naver.maps.Marker({
       position: new naver.maps.LatLng(cafe.lat, cafe.lng),
@@ -1033,28 +1036,8 @@
       }
     });
 
-    const infoWindow = new naver.maps.InfoWindow({
-      content: `<div style="
-        width: 160px; padding: 0; border-radius: 4px; overflow: hidden;
-        font-family: 'Noto Sans KR', sans-serif;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-      ">
-        <img src="${cafe.img}" style="width:100%;height:230px;object-fit:contain;background:#f1f0ed;display:block;">
-        <div style="padding:10px 12px;background:#fff;">
-          <p style="margin:0;font-size:12px;font-weight:500;color:#1a1916;">${cafe.name}</p>
-        </div>
-      </div>`,
-      borderWidth: 0,
-      backgroundColor: 'transparent',
-      disableAnchor: true,
-    });
-
     naver.maps.Event.addListener(marker, 'click', () => {
-      if (activeInfo) activeInfo.close();
-      if (activeInfo === infoWindow) { activeInfo = null; return; }
-      infoWindow.open(map, marker);
-      activeInfo = infoWindow;
-      showCafePanel(cafe.name);
+      focusCafe(cafe);
     });
   });
 
