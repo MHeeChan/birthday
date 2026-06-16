@@ -279,12 +279,16 @@
     }
 
     .route-option {
+      display: block;
+      width: 100%;
       border: 1px solid var(--border);
       border-radius: 6px;
       padding: 12px;
       background: var(--surface);
       text-align: left;
       cursor: pointer;
+      color: var(--text);
+      text-decoration: none;
     }
 
     .route-option.active,
@@ -304,6 +308,62 @@
       font-size: 0.75rem;
       color: var(--muted);
       line-height: 1.45;
+    }
+
+    .route-option em {
+      display: block;
+      margin-top: 8px;
+      color: var(--text);
+      font-size: 0.75rem;
+      font-style: normal;
+      font-weight: 500;
+    }
+
+    .route-detail {
+      margin-top: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      padding: 14px;
+    }
+
+    .route-detail-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1.35;
+      margin-bottom: 8px;
+    }
+
+    .route-detail-list {
+      display: grid;
+      gap: 7px;
+      list-style: none;
+    }
+
+    .route-detail-list li {
+      font-size: 0.86rem;
+      color: var(--text);
+      line-height: 1.55;
+      padding-left: 13px;
+      position: relative;
+    }
+
+    .route-detail-list li::before {
+      content: "";
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--text);
+      position: absolute;
+      left: 0;
+      top: 0.78em;
+    }
+
+    .route-note {
+      margin-top: 10px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.55;
     }
 
     .cafe-detail {
@@ -341,9 +401,10 @@
     }
 
     .cafe-reason {
-      font-size: 0.8rem;
-      color: var(--muted);
-      line-height: 1.65;
+      font-size: 0.96rem;
+      color: var(--text);
+      line-height: 1.7;
+      font-weight: 400;
     }
 
     .cafe-address {
@@ -622,8 +683,28 @@
       from: stops[0],
       to: stops[1],
       options: [
-        { label: '대중교통', desc: '지하철/버스 기준으로 이동 선택' },
-        { label: '택시', desc: '차량 이동 기준으로 지도 구간 표시' },
+        {
+          label: '대중교통',
+          desc: '지하철/버스 기준 이동',
+          detailTitle: '대중교통으로 성수까지',
+          steps: [
+            '풍덕천동에서 가까운 역이나 정류장까지 이동',
+            '분당/신분당선 쪽으로 서울 진입 후 2호선 성수권으로 환승',
+            '성수역 또는 뚝섬역에서 내려 강별 성수까지 도보 이동',
+          ],
+          note: '정확한 배차와 환승은 당일 네이버 지도에서 한 번 더 확인.',
+        },
+        {
+          label: '택시',
+          desc: '차량 이동 기준',
+          detailTitle: '택시로 성수까지',
+          steps: [
+            '풍덕천동에서 바로 강별 성수로 이동',
+            '강남/한강 교량 진입 구간 정체가 있으면 시간이 크게 늘 수 있음',
+            '도착지는 강별 성수로 찍고, 하차 후 주변 도보 이동',
+          ],
+          note: '점심 시간 맞추려면 출발 여유를 넉넉히 잡는 쪽.',
+        },
       ],
     },
     2: {
@@ -631,8 +712,28 @@
       from: stops[1],
       to: stops[2],
       options: [
-        { label: '택시', desc: '성수에서 한남으로 바로 이동' },
-        { label: '대중교통', desc: '지하철/버스 조합으로 이동 선택' },
+        {
+          label: '택시',
+          desc: '성수에서 한남으로 바로 이동',
+          detailTitle: '택시로 한남까지',
+          steps: [
+            '강별 성수에서 미닛뮤트 플래그십스토어로 바로 이동',
+            '성수대교/한남대교 방면 차량 흐름에 따라 소요시간 변동',
+            '미닛뮤트 도착 후 카페 후보들은 한남동 골목 도보권',
+          ],
+          note: '이 구간은 짐 있거나 더우면 택시가 제일 덜 피곤함.',
+        },
+        {
+          label: '대중교통',
+          desc: '지하철/버스 조합 이동',
+          detailTitle: '대중교통으로 한남까지',
+          steps: [
+            '성수/뚝섬 쪽 역에서 출발',
+            '한강진역 또는 이태원역 방면으로 이동',
+            '역에서 내려 미닛뮤트까지 도보 이동',
+          ],
+          note: '환승과 도보가 생겨서 택시보다 번거로운 선택지.',
+        },
       ],
     },
   };
@@ -686,6 +787,15 @@
     const route = routes[routeIndex];
     if (!route) return;
     highlightSegment(route.from, route.to);
+    const routeDetail = (option) => `
+      <div class="route-detail">
+        <h3 class="route-detail-title">${option.detailTitle}</h3>
+        <ul class="route-detail-list">
+          ${option.steps.map(step => `<li>${step}</li>`).join('')}
+        </ul>
+        <p class="route-note">${option.note}</p>
+      </div>
+    `;
     showPanel(
       'Route',
       route.title,
@@ -696,12 +806,17 @@
             <span>${option.desc}</span>
           </button>
         `).join('')}
+      </div>
+      <div id="route-detail-slot">
+        ${routeDetail(route.options[0])}
       </div>`
     );
     panelContent.querySelectorAll('.route-option').forEach((button) => {
       button.addEventListener('click', () => {
+        const option = route.options[Number(button.dataset.routeOption)];
         panelContent.querySelectorAll('.route-option').forEach(el => el.classList.remove('active'));
         button.classList.add('active');
+        document.getElementById('route-detail-slot').innerHTML = routeDetail(option);
         highlightSegment(route.from, route.to);
       });
     });
