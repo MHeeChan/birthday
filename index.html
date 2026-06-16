@@ -854,6 +854,16 @@
     panel.hidden = false;
   };
 
+  const moveMap = (lat, lng, zoom) => {
+    const target = new naver.maps.LatLng(lat, lng);
+    if (typeof map.morph === 'function') {
+      map.morph(target, zoom);
+    } else {
+      map.setCenter(target);
+      map.setZoom(zoom);
+    }
+  };
+
   const highlightSegment = (from, to) => {
     if (activeSegmentLine) activeSegmentLine.setMap(null);
     activeSegmentLine = new naver.maps.Polyline({
@@ -949,8 +959,7 @@
 
   const focusCafe = (cafe) => {
     showCafePanel(cafe.name);
-    map.panTo(new naver.maps.LatLng(cafe.lat, cafe.lng));
-    map.setZoom(17, true);
+    moveMap(cafe.lat, cafe.lng, 17);
   };
 
   const renderTimeline = () => {
@@ -980,8 +989,7 @@
     const stop = stops[index];
     if (!stop) return;
     setActiveStop(index);
-    map.panTo(new naver.maps.LatLng(stop.lat, stop.lng));
-    map.setZoom(stop.cafe ? 16 : 15, true);
+    moveMap(stop.lat, stop.lng, stop.cafe ? 16 : 15);
     if (stop.cafe) showCafePanel();
   };
 
@@ -1041,11 +1049,8 @@
     });
   });
 
-  const mapBounds = new naver.maps.LatLngBounds();
-  [...stops, ...cafes].forEach(item => {
-    mapBounds.extend(new naver.maps.LatLng(item.lat, item.lng));
-  });
-  map.fitBounds(mapBounds, { top: 70, right: 70, bottom: 70, left: 70 });
+  map.setCenter(new naver.maps.LatLng(37.5395, 127.0000));
+  map.setZoom(13);
 
   // 사이드바 클릭 → 지도 이동
   document.querySelectorAll('.stop').forEach((el) => {
