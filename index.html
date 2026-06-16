@@ -1138,6 +1138,7 @@
   const panelTitle = document.getElementById('panel-title');
   const panelContent = document.getElementById('panel-content');
   const splash = document.getElementById('splash');
+  let hbcDecisionDismissed = false;
   const closeSplash = () => {
     splash.hidden = true;
     document.body.classList.remove('splash-open');
@@ -1266,7 +1267,7 @@
     showPanel(
       'Dinner',
       '해방촌 신흥시장 저녁 후보',
-      `<div class="decision-notice" id="decision-notice">
+      `${hbcDecisionDismissed ? '' : `<div class="decision-notice" id="decision-notice">
         <p><strong>결정: 1번 신흥시장 안쪽 후보를 먼저 보기로 했어.</strong></p>
         <p>점심도 코스고, 커피&디저트도 있다 보니 느끼하지 않은 메뉴 중에서 추렸다. 명확하게 노상으로 명시되어 있다기보다는, 1층이면 대부분 테이블이 있긴 한 듯하다.</p>
         <p>와인바들은 일단 목록에는 없는데, 고급진 게 먹고 싶다면 한 번 더 찾아볼게. 토요일 저녁이라 야장 분위기 좋은 곳은 웨이팅이 있을 확률이 높고, 1번 쪽이 요즘 더 대세인 듯해서 먼저 확인하는 방식이야.</p>
@@ -1288,7 +1289,7 @@
             <p>1번 쪽 웨이팅이 길면 내려오면서 확인할 후보. 자리 있는 곳 우선으로 선택.</p>
           </div>
         </article>
-      </div>
+      </div>`}
       <div class="dinner-grid">
         ${dinnerPlaces.map(place => `
           <article class="dinner-card${place.name === selectedName ? ' active' : ''}" data-dinner="${place.name}">
@@ -1320,8 +1321,8 @@
       });
     });
     document.getElementById('decision-confirm')?.addEventListener('click', () => {
-      document.getElementById('decision-notice')?.remove();
-      document.getElementById('outside-map-options')?.remove();
+      hbcDecisionDismissed = true;
+      showOutsidePanel(selectedName);
     });
   };
 
