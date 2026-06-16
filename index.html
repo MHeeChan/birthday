@@ -524,6 +524,10 @@
       font-weight: 400;
     }
 
+    .decision-notice p + p {
+      margin-top: 10px;
+    }
+
     .decision-confirm {
       margin-top: 10px;
       border: 1px solid var(--text);
@@ -1263,29 +1267,10 @@
       'Dinner',
       '해방촌 신흥시장 저녁 후보',
       `<div class="decision-notice" id="decision-notice">
-        <p><strong>결정: 1번 신흥시장 안쪽 후보를 먼저 보기로 했어.</strong> 요즘은 1번 쪽이 더 대세인 느낌이고, 토요일 저녁에는 웨이팅이 있을 수 있으니 먼저 확인한 뒤 자리 있는 곳으로 움직이는 게 좋아.</p>
+        <p><strong>결정: 1번 신흥시장 안쪽 후보를 먼저 보기로 했어.</strong></p>
+        <p>점심도 코스고, 커피&디저트도 있다 보니 느끼하지 않은 메뉴 중에서 추렸다. 명확하게 노상으로 명시되어 있다기보다는, 1층이면 대부분 테이블이 있긴 한 듯하다.</p>
+        <p>와인바들은 일단 목록에는 없는데, 고급진 게 먹고 싶다면 한 번 더 찾아볼게. 토요일 저녁이라 야장 분위기 좋은 곳은 웨이팅이 있을 확률이 높고, 1번 쪽이 요즘 더 대세인 듯해서 먼저 확인하는 방식이야.</p>
         <button class="decision-confirm" type="button" id="decision-confirm">확인</button>
-      </div>
-      <div class="outside-summary">
-        <p>점심도 코스고 커피와 디저트까지 있다 보니, 저녁은 느끼하지 않은 메뉴 위주로 추렸어. 명확하게 노상이라고 적혀 있지 않아도 1층 가게들은 대부분 바깥 테이블 분위기가 있는 편이라, 토요일 저녁에는 웨이팅을 감안하고 움직이는 쪽이 좋아.</p>
-        <p>와인바는 일단 후보에서 뺐어. 더 고급진 저녁이 먹고 싶으면 와인바 쪽으로 한 번 더 찾아볼게. 1번 쪽이 꽉 차 있으면 2번 해방촌길 아래쪽 후보로 내려가면서 자리 있는 곳을 잡는 방식이야.</p>
-      </div>
-      <div class="dinner-grid">
-        ${dinnerPlaces.map(place => `
-          <article class="dinner-card${place.name === selectedName ? ' active' : ''}" data-dinner="${place.name}">
-            <img src="${place.img}" alt="${place.name}">
-            <div class="dinner-card-body">
-              <h3>${place.name}</h3>
-              <span>${place.type}</span>
-              <span>${place.address}</span>
-              <p>${place.reason}</p>
-              <div class="dinner-actions">
-                <button class="dinner-select" type="button" data-dinner-select="${place.name}">지도에서 보기</button>
-                <a class="dinner-more" href="${dinnerReviewUrl(place)}" target="_blank" rel="noopener">더보기</a>
-              </div>
-            </div>
-          </article>
-        `).join('')}
       </div>
       <div class="outside-grid">
         <article class="outside-card selected">
@@ -1303,6 +1288,23 @@
             <p>1번 쪽 웨이팅이 길면 내려오면서 확인할 후보. 자리 있는 곳 우선으로 선택.</p>
           </div>
         </article>
+      </div>
+      <div class="dinner-grid">
+        ${dinnerPlaces.map(place => `
+          <article class="dinner-card${place.name === selectedName ? ' active' : ''}" data-dinner="${place.name}">
+            <img src="${place.img}" alt="${place.name}">
+            <div class="dinner-card-body">
+              <h3>${place.name}</h3>
+              <span>${place.type}</span>
+              <span>${place.address}</span>
+              <p>${place.reason}</p>
+              <div class="dinner-actions">
+                <button class="dinner-select" type="button" data-dinner-select="${place.name}">지도에서 보기</button>
+                <a class="dinner-more" href="${dinnerReviewUrl(place)}" target="_blank" rel="noopener">더보기</a>
+              </div>
+            </div>
+          </article>
+        `).join('')}
       </div>`
     );
     panelContent.querySelectorAll('.dinner-select').forEach((button) => {
