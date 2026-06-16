@@ -306,6 +306,67 @@
       line-height: 1.45;
     }
 
+    .cafe-detail {
+      display: grid;
+      grid-template-columns: 112px 1fr;
+      gap: 14px;
+      align-items: stretch;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .cafe-detail img {
+      width: 100%;
+      height: 100%;
+      min-height: 160px;
+      object-fit: contain;
+      background: #f1f0ed;
+      display: block;
+    }
+
+    .cafe-detail-body {
+      padding: 14px 14px 14px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cafe-detail-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    .cafe-reason {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .cafe-address {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .review-link {
+      width: fit-content;
+      margin-top: auto;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 5px 9px;
+      color: var(--text);
+      font-size: 0.75rem;
+      text-decoration: none;
+    }
+
+    .review-link:hover {
+      border-color: var(--text);
+    }
+
     .cafe-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(138px, 1fr));
@@ -376,6 +437,14 @@
       .cafe-card img {
         height: 180px;
       }
+
+      .cafe-detail {
+        grid-template-columns: 96px 1fr;
+      }
+
+      .cafe-detail img {
+        min-height: 150px;
+      }
     }
   </style>
 </head>
@@ -418,7 +487,7 @@
         </div>
       </div>
 
-      <div class="stop" data-lat="37.5350" data-lng="127.0020">
+      <div class="stop" data-lat="37.5356" data-lng="126.9994">
         <div class="stop-line">
           <div class="stop-dot"></div>
           <div class="stop-connector"></div>
@@ -431,7 +500,7 @@
         </div>
       </div>
 
-      <div class="stop" data-lat="37.5350" data-lng="127.0025">
+      <div class="stop" data-lat="37.5364" data-lng="126.9997">
         <div class="stop-line">
           <div class="stop-dot"></div>
           <div class="stop-connector"></div>
@@ -483,19 +552,68 @@
   const stops = [
     { name: '풍덕천동 71-170', lat: 37.3219, lng: 127.1086, time: 'START', desc: '출발' },
     { name: '강별 성수',       lat: 37.5443, lng: 127.0557, time: '12:00', desc: '점심 코스', route: 1 },
-    { name: '미닛뮤트 플래그십스토어', lat: 37.5350, lng: 127.0020, time: '이동', desc: '택시 이동', route: 2 },
-    { name: '근처 카페',       lat: 37.5350, lng: 127.0025, time: '오후', desc: '한남동 일대 - 지도에서 선택', cafe: true },
+    { name: '미닛뮤트 플래그십스토어', lat: 37.5356, lng: 126.9994, time: '이동', desc: '택시 이동', route: 2 },
+    { name: '근처 카페',       lat: 37.5364, lng: 126.9997, time: '오후', desc: '한남동 일대 - 지도에서 선택', cafe: true },
     { name: '해방촌',          lat: 37.5422, lng: 126.9874, time: '저녁', desc: '간맥 후 귀가' },
   ];
 
   const cafes = [
-    { name: '낫배드커피',       lat: 37.5343, lng: 127.0025, img: './cafe/낫배드커피.jpg' },
-    { name: '네로우패스',       lat: 37.5355, lng: 127.0012, img: './cafe/네로우패스.jpg' },
-    { name: '브리즈서울',       lat: 37.5345, lng: 127.0038, img: './cafe/브리즈서울.jpg' },
-    { name: '아벡쉐리',         lat: 37.5338, lng: 126.9997, img: './cafe/아벡쉐리.jpg' },
-    { name: '아스티에드빌라트', lat: 37.5350, lng: 127.0018, img: './cafe/아스티에드빌라트카페.jpg' },
-    { name: '코제트 한남',      lat: 37.5348, lng: 127.0032, img: './cafe/코제트한남.jpg' },
-    { name: '한남작업실',       lat: 37.5343, lng: 127.0042, img: './cafe/한남작업실.jpg' },
+    {
+      name: '낫배드커피',
+      lat: 37.5373,
+      lng: 126.9991,
+      address: '서울 용산구 이태원로49길 37',
+      img: './cafe/낫배드커피.jpg',
+      reason: '대형카페기도 하고, 망고망고한 메뉴들이 맘에 들어서 고름!',
+    },
+    {
+      name: '네로우패스',
+      lat: 37.5364,
+      lng: 127.0006,
+      address: '서울 용산구 이태원로42길 38-4',
+      img: './cafe/네로우패스.jpg',
+      reason: '수박주스 9000원이길래 얼마나 맛잇나 궁금. 산딸기정과? 제천에서 못샀던거 라크크랑 닮아보여서 골랐어.',
+    },
+    {
+      name: '브리즈서울',
+      lat: 37.5367,
+      lng: 126.9995,
+      address: '서울 용산구 이태원로55가길 22 1층',
+      img: './cafe/브리즈서울.jpg',
+      reason: '',
+    },
+    {
+      name: '아벡쉐리',
+      lat: 37.5369,
+      lng: 127.0003,
+      address: '서울 용산구 이태원로 247 1,2층',
+      img: './cafe/아벡쉐리.jpg',
+      reason: '만다린블랙이 메옹이가 좋아하는 오렌지커피 같아 보여서 골라봐써.',
+    },
+    {
+      name: '아스티에드빌라트',
+      lat: 37.5370,
+      lng: 126.9993,
+      address: '서울 용산구 이태원로49길 13 아스티에드빌라트 서울 플레그쉽 스토어 4,5층',
+      img: './cafe/아스티에드빌라트카페.jpg',
+      reason: '1~4층이 팝업 같은거라서 그릇 구경같은거 하면서 아이쇼핑하고 올라가서 5층꼭대기뷰에서 커피!',
+    },
+    {
+      name: '코제트 한남',
+      lat: 37.5351,
+      lng: 127.0006,
+      address: '서울 용산구 대사관로5길 22 B2 카페 코제트',
+      img: './cafe/코제트한남.jpg',
+      reason: '인테리어 깔끔하고, 생복숭아빙수 유명.',
+    },
+    {
+      name: '한남작업실',
+      lat: 37.5373,
+      lng: 126.9986,
+      address: '서울 용산구 이태원로55나길 7 1층',
+      img: './cafe/한남작업실.jpg',
+      reason: '',
+    },
   ];
 
   const routes = {
@@ -590,10 +708,24 @@
   };
 
   const showCafePanel = (selectedName = '') => {
+    const selectedCafe = cafes.find(cafe => cafe.name === selectedName);
+    const reviewUrl = (cafe) =>
+      `https://search.naver.com/search.naver?query=${encodeURIComponent(`${cafe.name} 네이버 리뷰`)}`;
     showPanel(
       'Cafe',
       '한남동 카페 선택',
-      `<div class="cafe-grid">
+      `${selectedCafe ? `
+        <article class="cafe-detail">
+          <img src="${selectedCafe.img}" alt="${selectedCafe.name}">
+          <div class="cafe-detail-body">
+            <h3 class="cafe-detail-title">${selectedCafe.name}</h3>
+            <p class="cafe-address">${selectedCafe.address}</p>
+            ${selectedCafe.reason ? `<p class="cafe-reason">${selectedCafe.reason}</p>` : ''}
+            <a class="review-link" href="${reviewUrl(selectedCafe)}" target="_blank" rel="noopener">더보기</a>
+          </div>
+        </article>
+      ` : ''}
+      <div class="cafe-grid">
         ${cafes.map(cafe => `
           <button class="cafe-card${cafe.name === selectedName ? ' active' : ''}" type="button" data-cafe="${cafe.name}">
             <img src="${cafe.img}" alt="${cafe.name}">
@@ -606,8 +738,7 @@
       card.addEventListener('click', () => {
         const cafe = cafes.find(item => item.name === card.dataset.cafe);
         if (!cafe) return;
-        panelContent.querySelectorAll('.cafe-card').forEach(el => el.classList.remove('active'));
-        card.classList.add('active');
+        showCafePanel(cafe.name);
         map.panTo(new naver.maps.LatLng(cafe.lat, cafe.lng));
         map.setZoom(17, true);
       });
