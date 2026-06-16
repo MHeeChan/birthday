@@ -39,6 +39,69 @@
       min-height: 100vh;
     }
 
+    body.splash-open {
+      overflow: hidden;
+    }
+
+    .splash {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      background:
+        linear-gradient(rgba(247, 246, 244, 0.78), rgba(247, 246, 244, 0.92)),
+        url('./cafe/아스티에드빌라트카페.jpg') center / cover no-repeat;
+    }
+
+    .splash[hidden] {
+      display: none;
+    }
+
+    .splash-inner {
+      width: min(520px, 100%);
+      color: var(--text);
+    }
+
+    .splash-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.16em;
+      margin-bottom: 18px;
+    }
+
+    .splash-title {
+      font-size: clamp(2.35rem, 8vw, 5.3rem);
+      font-weight: 500;
+      line-height: 0.98;
+      margin-bottom: 18px;
+    }
+
+    .splash-subtitle {
+      font-size: clamp(1.05rem, 3.4vw, 1.45rem);
+      font-weight: 400;
+      line-height: 1.45;
+      margin-bottom: 30px;
+    }
+
+    .splash-enter {
+      border: 1px solid var(--text);
+      border-radius: 6px;
+      background: var(--text);
+      color: #fff;
+      min-height: 44px;
+      padding: 0 18px;
+      font-size: 0.92rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .splash-enter:hover {
+      background: #000;
+    }
+
     /* 레이아웃 */
     .layout {
       display: grid;
@@ -506,10 +569,25 @@
       .cafe-detail img {
         min-height: 150px;
       }
+
+      .splash {
+        align-items: end;
+        justify-items: start;
+        padding: 24px 20px 44px;
+      }
     }
   </style>
 </head>
-<body>
+<body class="splash-open">
+
+<section class="splash" id="splash" aria-label="기메온 생일 데이트코스">
+  <div class="splash-inner">
+    <p class="splash-date">2026 · 06 · 20</p>
+    <h1 class="splash-title">기메온</h1>
+    <p class="splash-subtitle">생일 데이트코스</p>
+    <button class="splash-enter" id="splash-enter" type="button">들어가기</button>
+  </div>
+</section>
 
 <div class="layout">
 
@@ -625,7 +703,7 @@
       lng: 126.9991,
       address: '서울 용산구 이태원로49길 37',
       img: './cafe/낫배드커피.jpg',
-      reason: '대형카페기도 하고, 망고망고한 메뉴들이 맘에 들어서 고름!',
+      reason: '공간이 넓어서 쉬어가기 좋고, 망고 계열 메뉴가 많아서 여름 데이트 코스로 잘 맞아 보였다.',
     },
     {
       name: '네로우패스',
@@ -633,7 +711,7 @@
       lng: 127.0006,
       address: '서울 용산구 이태원로42길 38-4',
       img: './cafe/네로우패스.jpg',
-      reason: '수박주스 9000원이길래 얼마나 맛잇나 궁금. 산딸기정과? 제천에서 못샀던거 라크크랑 닮아보여서 골랐어.',
+      reason: '9,000원 수박주스가 궁금했고, 산딸기 정과 메뉴가 제천에서 못 샀던 라크크를 떠올리게 해서 후보에 넣었다.',
     },
     {
       name: '브리즈서울',
@@ -649,7 +727,7 @@
       lng: 127.0003,
       address: '서울 용산구 이태원로 247 1,2층',
       img: './cafe/아벡쉐리.jpg',
-      reason: '만다린블랙이 메옹이가 좋아하는 오렌지커피 같아 보여서 골라봐써.',
+      reason: '만다린 블랙 메뉴가 메옹이가 좋아하는 오렌지 커피 느낌이라 취향에 맞을 것 같았다.',
     },
     {
       name: '아스티에드빌라트',
@@ -657,7 +735,7 @@
       lng: 126.9993,
       address: '서울 용산구 이태원로49길 13 아스티에드빌라트 서울 플레그쉽 스토어 4,5층',
       img: './cafe/아스티에드빌라트카페.jpg',
-      reason: '1~4층이 팝업 같은거라서 그릇 구경같은거 하면서 아이쇼핑하고 올라가서 5층꼭대기뷰에서 커피!',
+      reason: '1~4층에서 그릇과 오브제를 구경하고, 5층 꼭대기 뷰에서 커피까지 마실 수 있어서 코스 자체가 풍성하다.',
     },
     {
       name: '코제트 한남',
@@ -665,7 +743,7 @@
       lng: 127.0006,
       address: '서울 용산구 대사관로5길 22 B2 카페 코제트',
       img: './cafe/코제트한남.jpg',
-      reason: '인테리어 깔끔하고, 생복숭아빙수 유명.',
+      reason: '깔끔한 인테리어가 좋고, 생복숭아빙수로 유명해서 디저트 후보로 넣기 좋다.',
     },
     {
       name: '한남작업실',
@@ -685,19 +763,20 @@
       options: [
         {
           label: '대중교통',
-          desc: '지하철/버스 기준 이동',
-          detailTitle: '대중교통으로 성수까지',
+          desc: '약 70~85분',
+          detailTitle: '대중교통으로 성수까지 · 약 70~85분',
           steps: [
-            '풍덕천동에서 가까운 역이나 정류장까지 이동',
-            '분당/신분당선 쪽으로 서울 진입 후 2호선 성수권으로 환승',
-            '성수역 또는 뚝섬역에서 내려 강별 성수까지 도보 이동',
+            '풍덕천동에서 수지구청역까지 이동',
+            '신분당선 수지구청역 → 강남역',
+            '2호선 강남역 → 성수역 또는 뚝섬역',
+            '역에서 강별 성수까지 도보 이동',
           ],
-          note: '정확한 배차와 환승은 당일 네이버 지도에서 한 번 더 확인.',
+          note: '신분당선 + 2호선 조합. 배차와 도보 위치에 따라 10분 정도 달라질 수 있음.',
         },
         {
           label: '택시',
-          desc: '차량 이동 기준',
-          detailTitle: '택시로 성수까지',
+          desc: '약 50~70분',
+          detailTitle: '택시로 성수까지 · 약 50~70분',
           steps: [
             '풍덕천동에서 바로 강별 성수로 이동',
             '강남/한강 교량 진입 구간 정체가 있으면 시간이 크게 늘 수 있음',
@@ -714,8 +793,8 @@
       options: [
         {
           label: '택시',
-          desc: '성수에서 한남으로 바로 이동',
-          detailTitle: '택시로 한남까지',
+          desc: '약 20~35분',
+          detailTitle: '택시로 한남까지 · 약 20~35분',
           steps: [
             '강별 성수에서 미닛뮤트 플래그십스토어로 바로 이동',
             '성수대교/한남대교 방면 차량 흐름에 따라 소요시간 변동',
@@ -725,14 +804,15 @@
         },
         {
           label: '대중교통',
-          desc: '지하철/버스 조합 이동',
-          detailTitle: '대중교통으로 한남까지',
+          desc: '약 35~45분',
+          detailTitle: '대중교통으로 한남까지 · 약 35~45분',
           steps: [
-            '성수/뚝섬 쪽 역에서 출발',
-            '한강진역 또는 이태원역 방면으로 이동',
-            '역에서 내려 미닛뮤트까지 도보 이동',
+            '성수역에서 2호선 탑승',
+            '신당역에서 6호선으로 환승',
+            '6호선 한강진역 하차',
+            '한강진역에서 미닛뮤트까지 도보 이동',
           ],
-          note: '환승과 도보가 생겨서 택시보다 번거로운 선택지.',
+          note: '2호선 + 6호선 조합. 성수역까지 걷는 시간 포함하면 택시보다 번거로운 선택지.',
         },
       ],
     },
@@ -754,6 +834,15 @@
   const panelKicker = document.getElementById('panel-kicker');
   const panelTitle = document.getElementById('panel-title');
   const panelContent = document.getElementById('panel-content');
+  const splash = document.getElementById('splash');
+  const closeSplash = () => {
+    splash.hidden = true;
+    document.body.classList.remove('splash-open');
+  };
+  document.getElementById('splash-enter').addEventListener('click', closeSplash);
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !splash.hidden) closeSplash();
+  });
   document.getElementById('panel-close').addEventListener('click', () => {
     panel.hidden = true;
   });
