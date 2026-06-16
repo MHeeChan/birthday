@@ -1272,7 +1272,7 @@
         <p>와인바들은 일단 목록에는 없는데, 고급진 게 먹고 싶다면 한 번 더 찾아볼게. 토요일 저녁이라 야장 분위기 좋은 곳은 웨이팅이 있을 확률이 높고, 1번 쪽이 요즘 더 대세인 듯해서 먼저 확인하는 방식이야.</p>
         <button class="decision-confirm" type="button" id="decision-confirm">확인</button>
       </div>
-      <div class="outside-grid">
+      <div class="outside-grid" id="outside-map-options">
         <article class="outside-card selected">
           <div class="outside-badge">1</div>
           <img src="./outside/1.png" alt="해방촌 신흥시장 안쪽 후보">
@@ -1321,6 +1321,7 @@
     });
     document.getElementById('decision-confirm')?.addEventListener('click', () => {
       document.getElementById('decision-notice')?.remove();
+      document.getElementById('outside-map-options')?.remove();
     });
   };
 
